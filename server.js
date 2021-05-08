@@ -12,6 +12,7 @@ app.use(express.static('public'));
 
 
 const game = createGame();
+game.start();
 
 game.subscribe(command=>{
     sockets.emit(command.type, command);

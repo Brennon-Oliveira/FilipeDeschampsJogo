@@ -71,6 +71,14 @@
                 game.movePlayer(command);
             }
         })
+
+        socket.on('remove-fruit', command=>{
+            game.removeFruit(command);
+        })
+
+        socket.on('add-fruit', command=>{
+            game.addFruit(command);
+        })
         
     </script>
 
