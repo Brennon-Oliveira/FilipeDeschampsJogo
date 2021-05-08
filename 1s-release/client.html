@@ -36,13 +36,24 @@
         function createGame() {
 
             const state = {
-                players: {
-                    'player1' : {x: 1, y: 1},
-                    'player2' : {x:9, y: 9},
-                },
-                fruits: {
-                    'fruit1' : {x: 3, y: 1},
+                players: {},
+                fruits: {}
+            }
+
+            function addPlayer(command){
+                const playerId = command.playerId;
+                const playerX = command.playerX;
+                const playerY = command.playerY;
+
+                state.players[playerId] = {
+                    x: playerX, y: playerY
                 }
+            }
+
+            function removePlayer(command){
+                const playerId = command.playerId;
+
+                delete state.player[playerId];
             }
 
             function movePlayer(command){
@@ -51,31 +62,23 @@
                 const acceptedMoves = {
                     ArrowUp(player){
                         console.log('movePlayer().ArrowUp() --> Moving player Up');
-                        if(player.y - 1 >= 0){
-                            player.y--;
-                            return;
-                        }
+                        player.y = Math.max(player.y - 1, 0);
+                        return;
                     },
                     ArrowDown(player){
                         console.log('movePlayer().ArrowDown() --> Moving player Down');
-                        if(player.y + 1 < screen.height){
-                            player.y++;
-                            return;
-                        }
+                        player.y = Math.min(player.y + 1, screen.height-1);
+                        return;
                     },
                     ArrowLeft(player){
                         console.log('movePlayer().ArrowLeft() --> Moving player Left');
-                        if(player.x - 1 >= 0){
-                            player.x--;
-                            return;
-                        }
+                        player.x = Math.max(player.x - 1, 0);
+                        return;
                     },
                     ArrowRight(player){
                         console.log('movePlayer().ArrowRight() --> Moving player Right');
-                        if(player.x + 1 < screen.width){
-                            player.x++;
-                            return;
-                        }
+                        player.x = Math.min(player.x + 1, screen.width-1);
+                        return;
                     }
                 }
 
@@ -90,6 +93,8 @@
 
             return {
                 state,
+                addPlayer,
+                removePlayer,
                 movePlayer
             }
         }
