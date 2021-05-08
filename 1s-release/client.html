@@ -32,12 +32,35 @@
         //Observers subscribe
         keyboardListener.subscribe(game.movePlayer)
 
+        game.addPlayer({playerId: 'player1', playerX:3,playerY:5})
+        game.addPlayer({playerId: 'player2', playerX:1,playerY:7})
+
+        game.addFruit({fruitId: 'fruit1', fruitX:3, fruitY:4})
+        game.addFruit({fruitId: 'fruit2', fruitX:6, fruitY:2})
+        game.addFruit({fruitId: 'fruit3', fruitX:8, fruitY:5})
+
         
         function createGame() {
 
             const state = {
                 players: {},
                 fruits: {}
+            }
+
+            function addFruit(command){
+                const fruitId = command.fruitId;
+                const fruitX = command.fruitX;
+                const fruitY = command.fruitY;
+
+                state.fruits[fruitId] = {
+                    x: fruitX, y: fruitY
+                }
+            }
+
+            function removeFruit(command){
+                const fruitId = command.fruitId;
+
+                delete state.fruits[fruitId];
             }
 
             function addPlayer(command){
@@ -53,7 +76,7 @@
             function removePlayer(command){
                 const playerId = command.playerId;
 
-                delete state.player[playerId];
+                delete state.players[playerId];
             }
 
             function movePlayer(command){
@@ -82,17 +105,33 @@
                     }
                 }
 
+                function checkForFruitCollision(){
+                    for (const playerId in state.players){
+                        const player = state.players[playerId];
+
+                        for (const fruitId in state.fruits){
+                            const fruit = state.fruits[fruitId];
+
+                            if(player.x === fruit.x && player.y === fruit.y){
+                                console.log(`Collision between ${playerId} and ${fruitId}`)
+                            }
+                        }
+                    }
+                }
+
                 const key = command.keyPressed;
                 const player = game.state.players[command.playerId];
                 const moveFunction = acceptedMoves[key];
-                if(moveFunction){
+                if(player && moveFunction){
                     moveFunction(player);
+                    checkForFruitCollision();
                 }
-                return;
             }
 
             return {
                 state,
+                addFruit,
+                removeFruit,
                 addPlayer,
                 removePlayer,
                 movePlayer
@@ -142,16 +181,17 @@
         function renderScreen(){
             ctx.fillStyle = 'white';
             ctx.clearRect(0,0, screen.width, screen.height);
-            for(const playerId in game.state.players){
-                const player = game.state.players[playerId];
-                ctx.fillStyle = 'black';
-                ctx.fillRect(player.x,player.y,1,1);
-            }
 
             for(const fruitId in game.state.fruits){
                 const fruit = game.state.fruits[fruitId];
                 ctx.fillStyle = 'green';
                 ctx.fillRect(fruit.x,fruit.y, 1, 1);
+            }
+            
+            for(const playerId in game.state.players){
+                const player = game.state.players[playerId];
+                ctx.fillStyle = 'black';
+                ctx.fillRect(player.x,player.y,1,1);
             }
 
             requestAnimationFrame(renderScreen)
