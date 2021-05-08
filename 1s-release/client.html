@@ -25,8 +25,6 @@
         const screen = document.getElementById('screen');
         const ctx = screen.getContext('2d');
 
-        
-
         const game = {
             players: {
                 'player1' : {x: 1, y: 1},
@@ -37,20 +35,24 @@
             }
         }
 
-        renderScreen()
+        requestAnimationFrame(renderScreen)
 
         function renderScreen(){
-            for(playerId in game.players){
+            ctx.fillStyle = 'white';
+            ctx.clearRect(0,0, screen.width, screen.height);
+            for(const playerId in game.players){
                 const player = game.players[playerId];
                 ctx.fillStyle = 'black';
                 ctx.fillRect(player.x,player.y,1,1);
             }
 
-            for(fruitId in game.fruits){
+            for(const fruitId in game.fruits){
                 const fruit = game.fruits[fruitId];
                 ctx.fillStyle = 'green';
                 ctx.fillRect(fruit.x,fruit.y, 1, 1);
             }
+
+            requestAnimationFrame(renderScreen)
         }
     </script>
 
