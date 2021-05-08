@@ -46,30 +46,46 @@
             }
 
             function movePlayer(command){
-                console.log(`Moving ${command.playerId} with ${command.keyPressed}`);
+                console.log(`movePlayer() --> Moving ${command.playerId} with ${command.keyPressed}`);
+
+                const acceptedMoves = {
+                    ArrowUp(player){
+                        console.log('movePlayer().ArrowUp() --> Moving player Up');
+                        if(player.y - 1 >= 0){
+                            player.y--;
+                            return;
+                        }
+                    },
+                    ArrowDown(player){
+                        console.log('movePlayer().ArrowDown() --> Moving player Down');
+                        if(player.y + 1 < screen.height){
+                            player.y++;
+                            return;
+                        }
+                    },
+                    ArrowLeft(player){
+                        console.log('movePlayer().ArrowLeft() --> Moving player Left');
+                        if(player.x - 1 >= 0){
+                            player.x--;
+                            return;
+                        }
+                    },
+                    ArrowRight(player){
+                        console.log('movePlayer().ArrowRight() --> Moving player Right');
+                        if(player.x + 1 < screen.width){
+                            player.x++;
+                            return;
+                        }
+                    }
+                }
 
                 const key = command.keyPressed;
                 const player = game.state.players[command.playerId];
-
-                if(key === 'ArrowUp' && player.y - 1 >= 0){
-                    player.y--;
-                    return;
+                const moveFunction = acceptedMoves[key];
+                if(moveFunction){
+                    moveFunction(player);
                 }
-
-                if(key === 'ArrowDown' && player.y + 1 < screen.height){
-                    player.y++;
-                    return;
-                }
-
-                if(key === 'ArrowLeft' && player.x - 1 >= 0){
-                    player.x--;
-                    return;
-                }
-
-                if(key === 'ArrowRight' && player.x + 1 < screen.width){
-                    player.x++;
-                    return;
-                }
+                return;
             }
 
             return {
@@ -90,7 +106,7 @@
             }
 
             function notifyAll(command){
-                console.log(`Notifying ${state.observers.length} observers`);
+                console.log(`keyboardListener --> Notifying ${state.observers.length} observers`);
 
                 for(const observerFunction of state.observers){
                     observerFunction(command);
