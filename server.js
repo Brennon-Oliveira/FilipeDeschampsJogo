@@ -10,9 +10,8 @@ const sockets = new Server(server);
 
 app.use(express.static('public'));
 
-
 const game = createGame();
-game.start();
+// game.start();
 
 game.subscribe(command=>{
     sockets.emit(command.type, command);
@@ -32,12 +31,12 @@ sockets.on('connection', socket => {
 
     socket.on('move-player', (command)=>{
         command.type = 'move-player';
-        command.playerId;
+        command.playerId = playerId;
 
         game.movePlayer(command);
     })
 })
 
 server.listen(PORT, ()=>{
-    console.log(`Server is running at ${PORT}`);
+    console.log(`Server is running at http://192.168.0.107:${PORT}`);
 })

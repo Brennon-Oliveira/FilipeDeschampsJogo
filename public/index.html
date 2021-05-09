@@ -6,6 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Primeiro Jogo Online</title>
     <style>
+        body {
+            overscroll-behavior: contain;
+        }
+
         #screen {
             border: 10px solid #ccc;
             image-rendering: pixelated;
@@ -24,14 +28,14 @@
 
     <script type="module">
         import createKeyboardListener from './keyboardListener.js';
+        import createSwipeListener from './swipeListener.js';
         import createGame from './game.js';
         import renderScreen from './renderScreen.js';
-
-        
 
         //Objects create
         const game = createGame();
         const keyboardListener = createKeyboardListener(document);
+        const swipeListener = createSwipeListener();
 
         const socket = io();
 
@@ -49,7 +53,12 @@
 
             keyboardListener.registerPlayerId(playerId)
             keyboardListener.subscribe(game.movePlayer)
+            swipeListener.registerPlayerId(playerId);
+            swipeListener.subscribe(game.movePlayer);
             keyboardListener.subscribe((command)=>{
+                socket.emit(command.type, command);
+            })
+            swipeListener.subscribe((command)=>{
                 socket.emit(command.type, command);
             })
         });
