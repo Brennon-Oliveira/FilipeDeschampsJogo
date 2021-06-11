@@ -11,7 +11,7 @@ const sockets = new Server(server);
 app.use(express.static('public'));
 
 const game = createGame();
-game.start();
+//game.start();
 
 game.subscribe(command=>{
     sockets.emit(command.type, command);
